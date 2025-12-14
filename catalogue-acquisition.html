@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Catalogue des Nouveaux Livres – FPST</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+        :root {
+            --informatique: #3b82f6;
+            --maths: #10b981;
+            --physique: #ef4444;
+            --chimie: #f59e0b;
+            --langues: #8b5cf6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #d1e7ff);
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        select, button {
+            padding: 12px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+        select:focus, button:focus {
+            border-color: #3b82f6;
+        }
+
+        button {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        button:hover {
+            background: #e5e7eb;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 30px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+
+        .book-cover {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .book-author {
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #4b5563;
+            font-size: 0.9rem;
+            margin-top: 12px;
+        }
+
+        .category {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .automatisme-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .automatisme-card h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .automatisme-card .book-card {
+            display: flex;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+        
+        .automatisme-card .book-card img {
+            width: 150px;
+            height: 200px;
+            margin-right: 20px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+        }
+        
+        .automatisme-card .book-card .book-placeholder {
+            width: 150px;
+            height: 200px;
+            margin-right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+        
+        .automatisme-card .book-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .automatisme-card .book-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #1e40af;
+        }
+        
+        .automatisme-card .book-info p {
+            margin: 5px 0;
+            color: #4b5563;
+        }
+        
+        .amazon-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #FF9900;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .amazon-button:hover {
+            background-color: #e68a00;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            header h1 { font-size: 2.2rem; }
+            .book-cover { height: 180px; }
+            .automatisme-card .book-card {
+                flex-direction: column;
+                align-items: center;
+            }
+            .automatisme-card .book-card img {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+<meta content="Catalogue des nouveaux livres disponibles à la FPST." name="description"/>
+<meta content="livres, catalogue, FPST, informatique, mathématiques, physique, chimie, langues" name="keywords"/>
+</head>
+<body>
+<main>
+<div class="container">
+<header>
+<p style="font-style: italic; font-size: 1.3rem; color: #64748b; margin-bottom: 15px;">École Nationale Polytechnique d'Oran - Maurice Audin</p>
+<img src="https://raw.githubusercontent.com/biblioconsulfpst/logo-enpo/main/enpo.jpg" alt="Logo ENPO-MA" style="width: 150px; height: auto; margin: 20px auto; display: block;">
+<h1>📚 Catalogue des Nouvelles Acquisitions</h1>
+<p style="font-size: 1.15rem;">Nouveautés ajoutées à la bibliothèque <span style="color: #ef4444; font-weight: bold;">2025</span></p>
+</header>
+<div class="controls">
+<div class="search-box">
+<label for="specialtyFilter" style="font-weight: 600; color: #1e40af; margin-right: 10px;">Recherche par spécialité :</label>
+<select aria-label="Recherche par spécialité" id="specialtyFilter" style="flex: 1; max-width: 300px;">
+<option value="">Toutes les spécialités</option>
+<option value="Mathématiques">Mathématiques</option>
+<option value="Physique">Physique</option>
+<option value="Informatique">Informatique</option>
+</select>
+</div>
+</div>
+<div class="controls" style="display: none;">
+<div class="search-box">
+<input aria-label="Rechercher un livre" id="searchInput" placeholder="Rechercher un titre, auteur, ou mot-clé..." type="text"/>
+</div>
+<div class="filters">
+<select aria-label="Filtrer par catégorie" id="categoryFilter">
+<option value="">Toutes les catégories</option>
+<option value="Informatique">Informatique</option>
+<option value="Mathématiques">Mathématiques</option>
+<option value="Physique">Physique</option>
+<option value="Chimie">Chimie</option>
+<option value="Langues">Langues</option>
+</select>
+<select aria-label="Trier par" id="sortSelect">
+<option value="date-desc">Plus récents</option>
+<option value="date-asc">Plus anciens</option>
+<option value="title">Titre (A → Z)</option>
+</select>
+<button aria-label="Réinitialiser les filtres" id="resetFilters">
+<i class="fas fa-undo"></i> Réinitialiser
+                </button>
+</div>
+</div>
+<div aria-label="Liste des livres" class="books-grid" id="booksGrid" role="region" style="display: none;">
+<!-- Les livres seront injectés ici via JS -->
+</div>
+<div aria-label="Pagination" class="pagination" id="pagination" role="navigation" style="display: none;">
+<!-- Boutons de pagination -->
+</div>
+
+<div class="automatisme-card">
+<h2>MATHÉMATIQUES</h2>
+<div class="book-card">
+<img alt="Couverture du livre Toutes les mathématiques et les bases de l'informatique" src="https://images-eu.ssl-images-amazon.com/images/I/71doSBqwk-L._SL900_.jpg"/>
+<div class="book-info">
+<h3>Toutes les mathématiques et les bases de l'informatique</h3>
+<p><strong>Auteur:</strong> Horst Stöcker</p>
+<p><strong>Description:</strong> Bible regroupant toutes les formules et définitions en mathématiques - De l'arithmétique à la statistique</p>
+<p><strong>Édition:</strong> Dunod - 1184 pages</p>
+<a class="amazon-button" href="https://www.amazon.fr/Toutes-math%C3%A9matiques-bases-linformatique-St%C3%B6cker/dp/2100821334" target="_blank">Voir Amazon</a>
+</div>
+</div>
+<div class="book-card">
+<img alt="Couverture du livre Mathématiques MPSI/MP2I" src="https://images-eu.ssl-images-amazon.com/images/I/61B+Im+rBhL._SL900_.jpg"/>
+<div class="book-info">
+<h3>Mathématiques MPSI/MP2I</h3>
+<p><strong>Auteur:</strong> Nicolas Nguyen</p>
+<p><strong>Description:</strong> Cours, exercices corrigés et méthodes pour réviser et s'entraîner aux concours</p>
+<p><strong>Édition:</strong> Ellipses - 6e édition</p>
+<a class="amazon-button" href="https://www.amazon.fr/Math%C3%A9matiques-MPSI-MP2I-Nicolas-Nguyen/dp/2340103770" target="_blank">Voir Amazon</a>
+</div>
+</div>
+<div class="book-card">
+<img alt="Couverture du livre Les Maths pour les Nuls" src="https://images-eu.ssl-images-amazon.com/images/I/51+RGkjpRLL._SL900_.jpg"/>
+<div class="book-info">
+<h3>Les Maths pour les Nuls - Grand Format</h3>
+<p><strong>Auteur:</strong> Jean-Louis Boursin</p>
+<p><strong>Description:</strong> Redécouvrir les mathématiques de manière ludique - Pour tous niveaux</p>
+<p><strong>Édition:</strong> First - 3e édition</p>
+<a class="amazon-button" href="https://www.amazon.fr/Maths-pour-Nuls-grand-format/dp/2412087016" target="_blank">Voir Amazon</a>
+</div>
+</div>
+</div>
+
+<div class="automatisme-card">
+<h2>PHYSIQUE</h2>
+<div class="book-card">
+<img alt="Couverture du livre Toute la Physique" src="https://images-eu.ssl-images-amazon.com/images/I/71JJgvvliZL._SL900_.jpg"/>
+<div class="book-info">
+<h3>Toute la Physique - 2e édition</h3>
+<p><strong>Auteur:</strong> Horst Stöcker, Francis Jundt, Georges Guillaume</p>
+<p><strong>Description:</strong> Ensemble de la physique enseignée pendant les trois années de Licence - De la mécanique à la physique quantique</p>
+<p><strong>Édition:</strong> Dunod - 1232 pages</p>
+<a class="amazon-button" href="https://www.amazon.fr/Toute-Physique-ed-Horst-St%C3%B6cker/dp/2100820265" target="_blank">Voir Amazon</a>
+</div>
+</div>
+<div class="book-card">
+<img alt="Couverture du livre Physique tout-en-un MPSI-MP2I" src="https://images-eu.ssl-images-amazon.com/images/I/61qo6luE18L._SL900_.jpg"/>
+<div class="book-info">
+<h3>Physique tout-en-un MPSI-MP2I</h3>
+<p><strong>Auteur:</strong> Bernard Salamito, Stéphane Cardini, Valérie Bouland et collectif</p>
+<p><strong>Description:</strong> Cours complet, exercices et problèmes corrigés - Conforme au programme 2021</p>
+<p><strong>Édition:</strong> Dunod - 3e édition</p>
+<a class="amazon-button" href="https://www.amazon.fr/Physique-MPSI-Tout-en-Val%C3%A9rie-Bouland/dp/2100879227" target="_blank">Voir Amazon</a>
+</div>
+</div>
+<div class="book-card">
+<img alt="Couverture du livre La Physique de l'extrême" src="https://images-eu.ssl-images-amazon.com/images/I/71G22n67TML._SL900_.jpg"/>
+<div class="book-info">
+<h3>La Physique de l'extrême</h3>
+<p><strong>Auteur:</strong> Julien Bobroff</p>
+<p><strong>Description:</strong> Ces records qui repoussent les frontières du possible - Vulgarisation accessible et passionnante</p>
+<p><strong>Édition:</strong> Albin Michel - 208 pages</p>
+<a class="amazon-button" href="https://www.amazon.fr/Physique-lextr%C3%AAme-repoussent-fronti%C3%A8res-possible/dp/2226490019" target="_blank">Voir Amazon</a>
+</div>
+</div>
+</div>
+
+<div class="automatisme-card">
+<h2>INFORMATIQUE</h2>
+<div class="book-card">
+<img alt="Couverture du livre Cybersécurité pour les Nuls" src="https://images-eu.ssl-images-amazon.com/images/I/61nRl8Ad9BL._AC_UL165_SR165,165_.jpg"/>
+<div class="book-info">
+<h3>Cybersécurité pour les Nuls - 3e édition</h3>
+<p><strong>Auteur:</strong> Joseph Steinberg</p>
+<p><strong>Description:</strong> Guide complet pour protéger vos données personnelles et professionnelles - Méthodes pratiques et accessibles</p>
+<p><strong>Édition:</strong> First - 3e édition</p>
+<a class="amazon-button" href="https://www.amazon.fr/Cybers%C3%A9curit%C3%A9-pour-Nuls-3e-%C3%A9dition/dp/2412102813" target="_blank">Voir Amazon</a>
+</div>
+</div>
+<div class="book-card">
+<img alt="Couverture du livre Réseaux informatiques" src="https://images-eu.ssl-images-amazon.com/images/I/51taaJKjilL._AC_UL232_SR232,232_.jpg"/>
+<div class="book-info">
+<h3>Réseaux informatiques - Notions fondamentales</h3>
+<p><strong>Auteur:</strong> José Dordoigne</p>
+<p><strong>Description:</strong> Protocoles, Architectures, Réseaux sans fil - Formation complète aux réseaux</p>
+<p><strong>Édition:</strong> ENI - 10e édition</p>
+<a class="amazon-button" href="https://www.amazon.fr/R%C3%A9seaux-informatiques-fondamentales-Protocoles-Architectures/dp/2409048269" target="_blank">Voir Amazon</a>
+</div>
+</div>
+<div class="book-card">
+<img alt="Couverture du livre Jours pour Maîtriser les Bases de l'Informatique" src="https://images-eu.ssl-images-amazon.com/images/I/71SAo1n0aBL._AC_UL232_SR232,232_.jpg"/>
+<div class="book-info">
+<h3>7 Jours pour Maîtriser les Bases de l'Informatique</h3>
+<p><strong>Auteur:</strong> Guide pratique</p>
+<p><strong>Description:</strong> Apprentissage rapide et efficace des fondamentaux de l'informatique - Idéal pour débutants</p>
+<p><strong>Édition:</strong> Auto-édition</p>
+<a class="amazon-button" href="https://www.amazon.fr/Jours-pour-Ma%C3%AEtriser-Bases-lInformatique/dp/B0FHWKZG4T" target="_blank">Voir Amazon</a>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+        // Base de données locale
+        const livres = [];
+
+        // Couleurs par catégorie
+        const categoryColors = {
+            "Informatique": "var(--informatique)",
+            "Mathématiques": "var(--maths)",
+            "Physique": "var(--physique)",
+            "Chimie": "var(--chimie)",
+            "Langues": "var(--langues)",
+        };
+
+        // Pagination simulée
+        const itemsPerPage = 4;
+        let currentPage = 1;
+
+        // Formater la date
+        function formatDate(dateStr) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateStr).toLocaleDateString('fr-FR', options);
+        }
+
+        // Générer une carte livre
+        function renderBook(book) {
+            const color = categoryColors[book.categorie] || '#64748b';
+            return `
+                <div class="book-card" data-category="${book.categorie}" data-date="${book.date}" data-title="${book.titre.toLowerCase()}" role="article" aria-label="${book.titre} par ${book.auteur}">
+                    <div class="book-cover" style="background: ${color};">
+                        <i class="fas fa-book-open" aria-hidden="true"></i>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${book.titre}</h3>
+                        <p class="book-author">– ${book.auteur}</p>
+                        <span class="category" style="background: ${color}20; color: ${color};">${book.categorie}</span>
+                        <div class="book-meta">
+                            <span><i class="fas fa-calendar-day" aria-hidden="true"></i> ${formatDate(book.date)}</span>
+                            <span><i class="fas fa-file-alt" aria-hidden="true"></i> ${book.pages} p.</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Afficher les livres avec pagination
+        function displayBooks(list) {
+            const grid = document.getElementById('booksGrid');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedList = list.slice(startIndex, startIndex + itemsPerPage);
+
+            if (paginatedList.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <h3>Aucun livre trouvé</h3>
+                        <p>Essayez un autre mot-clé ou filtre.</p>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = paginatedList.map(renderBook).join('');
+            }
+
+            // Mise à jour de la pagination
+            updatePagination(list.length);
+        }
+
+        // Mise à jour des boutons de pagination
+        function updatePagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.className = i === currentPage ? 'active' : '';
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    filterAndSearch();
+                });
+                pagination.appendChild(button);
+            }
+        }
+
+        // Trier les livres
+        function sortBooks(list, criterion) {
+            return [...list].sort((a, b) => {
+                switch (criterion) {
+                    case 'date-desc': return new Date(b.date) - new Date(a.date);
+                    case 'date-asc': return new Date(a.date) - new Date(b.date);
+                    case 'title': return a.titre.localeCompare(b.titre);
+                    default: return 0;
+                }
+            });
+        }
+
+        // Filtrer et rechercher
+        function filterAndSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const sortBy = document.getElementById('sortSelect').value;
+
+            let filtered = livres.filter(book => {
+                const matchesSearch =
+                    book.titre.toLowerCase().includes(searchTerm) ||
+                    book.auteur.toLowerCase().includes(searchTerm) ||
+                    book.isbn.includes(searchTerm);
+                const matchesCategory = category === '' || book.categorie === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            filtered = sortBooks(filtered, sortBy);
+            displayBooks(filtered);
+        }
+
+        // Réinitialiser les filtres
+        document.getElementById('resetFilters').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            currentPage = 1;
+            filterAndSearch();
+        });
+
+        // Filtrer les sections par spécialité
+        function filterSpecialty() {
+            const specialty = document.getElementById('specialtyFilter').value;
+            const sections = document.querySelectorAll('.automatisme-card');
+            
+            sections.forEach(section => {
+                const title = section.querySelector('h2').textContent.trim();
+                
+                if (specialty === '') {
+                    // Afficher toutes les sections
+                    section.style.display = 'block';
+                } else if (title === specialty.toUpperCase()) {
+                    // Afficher seulement la section correspondante
+                    section.style.display = 'block';
+                } else {
+                    // Masquer les autres sections
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialiser
+        document.addEventListener('DOMContentLoaded', () => {
+            filterAndSearch();
+            
+            // Événement pour le filtre de spécialité
+            document.getElementById('specialtyFilter').addEventListener('change', filterSpecialty);
+            
+            document.getElementById('searchInput').addEventListener('input', () => {
+                currentPage = 1;
+                filterAndSearch();
+            });
+            document.getElementById('categoryFilter').addEventListener('change', () => {
+                currentPage = 1;
+                filterAndSearch();
+            });
+            document.getElementById('sortSelect').addEventListener('change', () => {
+                currentPage = 1;
+                filterAndSearch();
+            });
+        });
+    </script>
+</main>
+</body>
+</html>
